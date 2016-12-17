@@ -42,7 +42,6 @@ bailout () {
 shopt -s nullglob dotglob
 
 # TODO: get rid of that copy/paste code block mess below, dude
-
 if [ -e /usr/src ]; then
   files=(/usr/src/*)
   if [[ ! "${#files[@]}" -gt 0 ]]; then
@@ -76,30 +75,38 @@ else
   svn co "$svn_src_url" /usr/src
 fi
 
-
 if [ -e /usr/ports ]; then
   files=(/usr/ports/*)
   if [[ ! "${#files[@]}" -gt 0 ]]; then
     # Edge-case: /usr/ports does exist, but is empty
-    mv /usr/ports /usr/ports.rebuild.pre
+    echo "=== /usr/ports exists, but is empty."
     echo "=== Obtaining /usr/ports via SVN ..."
     sleep 1
+    mv /usr/ports /usr/ports.rebuild.pre
+    cd /usr
     svn co "$svn_ports_url" /usr/ports
   else
-    # /usr/ports exists and is non-empty, so it's safe to call svn up
-    echo "=== Updating /usr/ports via SVN ..."
-    sleep 1
-    cd /usr/ports
-    svn up
-    cd -
+    if [[ ! /usr/ports/.svn ]]; then
+      echo "=== /usr/ports exists but wasn't obtained via SVN."
+      echo "=== Obtaining fresh copy of /usr/ports via SVN ..."
+      sleep 1
+      mv /usr/ports /usr/ports.rebuild.pre
+      svn co "$svn_ports_url" /usr/ports
+    else
+      # /usr/ports exists and is non-empty, so it's safe to call svn up
+      echo "=== Updating /usr/ports via SVN ..."
+      sleep 1
+      cd /usr/ports
+      svn up
+      cd -
+    fi
   fi
 else
   cd /usr
-  echo "=== SVN: obtaining fresh clone of /usr/ports ..."
+  echo "=== Obtaining fresh clone of /usr/ports via SVN ..."
   sleep 1
-  svn checkout "$svn_ports_url" /usr/ports
+  svn co "$svn_ports_url" /usr/ports
 fi
-
 
 if [ -e /usr/src/sys/amd64/conf/${kernconf} ]; then
   echo "=== Using existing kernel configuration file $kernconf"
