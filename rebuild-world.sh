@@ -54,16 +54,24 @@ if [ -e /usr/src ]; then
     cd /usr
     svn co "$svn_src_url" /usr/src
   else
-    # /usr/src exists and is non-empty, so it's safe to call svn up
-    echo "=== Updating /usr/src via SVN ..."
-    sleep 1
-    cd /usr/src
-    svn up
-    cd -
+    if [[ ! /usr/src/.svn ]]; then
+      echo "=== /usr/src exists but wasn't obtained via SVN."
+      echo "=== Obtaining fresh copy of /usr/src via SVN ..."
+      sleep 1
+      mv /usr/src /usr/src.rebuild.pre
+      svn co "$svn_src_url" /usr/src
+    else
+      # /usr/src exists and is non-empty, so it's safe to call svn up
+      echo "=== Updating /usr/src via SVN ..."
+      sleep 1
+      cd /usr/src
+      svn up
+      cd -
+    fi
   fi
 else
   cd /usr
-  echo "=== SVN: obtaining fresh clone of /usr/src ..."
+  echo "=== Obtaining fresh clone of /usr/src via SVN ..."
   sleep 1
   svn co "$svn_src_url" /usr/src
 fi
