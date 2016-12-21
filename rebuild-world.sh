@@ -30,7 +30,7 @@ release="11"
 
 # define /usr/src / /usr/ports SVN repository URLs
 svn_src_url="https://svn0.us-west.freebsd.org/base/stable/${release}"
-svn_ports_url="https://svn0.us-west.freebsd.org/base/stable/${release}"
+svn_ports_url="https://svn0.us-west.freebsd.org/ports/head"
 
 bailout () {
   echo -n "${0}: Error: "
@@ -135,7 +135,7 @@ echo "NOTE: You'll have to reboot after installing the new world distribution:"
 echo
 echo "[reboot]"
 echo "# cd /usr/src"
-echo "# make installworld KERNCONF=BASE"
+echo "# make installworld KERNCONF=${kernconf}"
 echo "[reboot]"
 echo "# echo 'hooray'"
 echo ""
