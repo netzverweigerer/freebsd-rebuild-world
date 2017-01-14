@@ -25,7 +25,7 @@
 timestamp="$(date '+%Y-%m-%d__%H-%M-%S')"
 
 # Number of jobs (make) to run simultaneously
-jobs=4
+jobs=2
 
 # Define kernel configuration file name / architecture / release version
 # We use the host-name of the machine (upper-cased), by default
