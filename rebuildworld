@@ -51,14 +51,14 @@ bailout () {
   exit 1
 }
 
-# Print a message (in case of success)
+# Print a message (green, in case of success)
 msg () {
   tput setaf 2
   echo "=== $@"
   tput sgr0
 }
 
-# Print a message (in case of success)
+# Print a message (yellow)
 msgi () {
   tput setaf 3
   echo "=== $@"
@@ -68,7 +68,7 @@ msgi () {
 # include hidden files in globs (for /usr/src / /usr/ports checks)
 shopt -s nullglob dotglob
 
-# TODO: get rid of that copy/paste code block mess below, dude
+# Update /usr/src
 if [ -e /usr/src ]; then
   files=(/usr/src/*)
   if [[ ! "${#files[@]}" -gt 0 ]]; then
@@ -102,6 +102,7 @@ else
   svn co "$svn_src_url" /usr/src
 fi
 
+# Update /usr/ports
 if [ -e /usr/ports ]; then
   files=(/usr/ports/*)
   if [[ ! "${#files[@]}" -gt 0 ]]; then
